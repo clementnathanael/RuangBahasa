@@ -795,6 +795,14 @@ body {
     text-align: center;
 }
 
+.signup_error {
+    display: none;
+    color: red;
+    margin-top: 12px;
+    font-size: 14px;
+    text-align: center;
+}
+
 .message.show {
     display: block;
 }

@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <a href="#" class="logo">RuangBahasa!</a>
+        <a href="index.html" class="logo">RuangBahasa!</a>
         <div class="hamburger" onclick="toggleNav()">
             <i class="fas fa-bars"></i>
         </div>
@@ -17,9 +17,10 @@
                 <i class="fas fa-times"></i>
             </div>
             <a href="index.html">Home</a>
-            <a href="page2.html" class="active">Course</a>
-            <a href="about.html">Tentang</a>
-            <a href="login.html">Login</a>
+            <a href="page2.html" class="active">Kuis</a>
+            <a href="material.html">Materi</a>
+            <a href="ruangbahasa.html">Tentang</a>
+            <a href="about.html">Developer</a>
         </nav>
     </header>
 
@@ -44,15 +45,17 @@
                     <div id="options">
                         <!-- Options will be dynamically generated here -->
                     </div>
-                    <div class="button-container"></div>
-                    <button id="prev-btn" class="btn3" type="button" style="display: none;">Previous</button>
-                    <button id="next-btn" class="btn3" type="button">Next</button>
-                    <button id="submit-btn" type="submit" style="display:none;">Submit</button>
-                    <button id="finish-btn" type="button" style="display:none;">Finish</button>
-                    
+                    <div class="bottom-container">
+                        <div class="button-container">
+                            <button id="prev-btn" class="btn3" type="button" style="display: none;">Previous</button>
+                            <button id="next-btn" class="btn3" type="button">Next</button>
+                            <button id="submit-btn" class="btn3" type="submit" style="display: none;">Submit</button>
+                            <button id="finish-btn" class="btn3" style="display:none;">Finish</button>
+                        </div>
+                        <div id="result" class="result-box"></div>
+                    </div>
                 </div>
             </form>
-            <div id="result"></div>
         </div>
     </div>
 

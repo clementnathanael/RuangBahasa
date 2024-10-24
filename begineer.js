@@ -225,7 +225,7 @@ document.getElementById('quizForm').addEventListener('submit', function(event) {
 });
 
 document.getElementById('finish-btn').addEventListener('click', () => {
-    window.location.href = 'index2.html';
+    window.location.href = 'page2.html';
 });
 
 loadQuestion();
