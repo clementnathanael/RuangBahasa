@@ -6,31 +6,16 @@ function loadMaterial(materialId) {
     let content = '';
     switch (material) {
         case 'material1-1':
-            content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi.';
+            content = 'Kata baku adalah kata yang penulisannya sesuai dengan kaidah atau aturan dalam bahasa yang telah ditetapkan oleh otoritas bahasa, dalam hal ini Kamus Besar Bahasa Indonesia (KBBI). Kata baku umumnya digunakan dalam situasi resmi, seperti dalam tulisan ilmiah, surat resmi, pidato formal, dan media massa. Ciri-ciri kata baku: Mengikuti ejaan yang disempurnakan (EYD), Tidak terpengaruh oleh bahasa asing atau bahasa daerah, Digunakan dalam situasi formal, Bersumber dari KBBI';
             break;
         case 'material1-2':
-            content = 'Content for Material 1-2';
-            break;
-        case 'material1-3':
-            content = 'Content for Material 1-3';
+            content = 'Kata tidak baku adalah kata yang tidak sesuai dengan aturan bahasa yang berlaku. Kata-kata ini sering digunakan dalam percakapan sehari-hari atau situasi informal. Ciri-ciri kata tidak baku: Tidak mengikuti ejaan yang disempurnakan, Sering dipengaruhi oleh bahasa daerah atau bahasa asing, Digunakan dalam percakapan non-formal, tidak terdapat dalam KBBI sebagai kata yang benar.';
             break;
         case 'material2-1':
-            content = 'Content for Material 2-1';
-            break;
-        case 'material2-2':
-            content = 'Content for Material 2-2';
-            break;
-        case 'material2-3':
-            content = 'Content for Material 2-3';
+            content = 'Ejaan adalah cara atau aturan dalam penulisan kata-kata dari suatu bahasa, termasuk cara menuliskan huruf, kata, frasa, tanda baca, serta penggunaan huruf kapital. Dalam bahasa Indonesia, aturan ejaan yang berlaku adalah Ejaan yang Disempurnakan (EYD), yang sekarang dikenal sebagai Pedoman Umum Ejaan Bahasa Indonesia (PUEBI). Fungsi ejaan antara lain: Menjaga konsistensi penulisan, Mempermudah pemahaman dan komunikasi, Menghindari kesalahpahaman dalam bahasa tulis.';
             break;
         case 'material3-1':
-            content = 'Content for Material 3-1';
-            break;
-        case 'material3-2':
-            content = 'Content for Material 3-2';
-            break;
-        case 'material3-3':
-            content = 'Content for Material 3-3';
+            content = 'Penulisan kata dalam bahasa Indonesia diatur berdasarkan jenis kata, seperti kata dasar, kata ulang, kata majemuk, serta kata dengan imbuhan, dan juga penulisan kata serapan. Penggunaan huruf dan penulisan kata ini penting untuk menjaga konsistensi, ketepatan, dan kejelasan dalam komunikasi tertulis sesuai dengan standar bahasa Indonesia yang benar.';
             break;
         default:
             content = '';
