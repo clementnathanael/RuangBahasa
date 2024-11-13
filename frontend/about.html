@@ -9,7 +9,7 @@
 </head>
 <body>
     <header>
-        <a href="index.html" class="logo">RuangBahasa!</a>
+        <a href="/index.html" class="logo">RuangBahasa!</a>
         <div class="hamburger" onclick="toggleNav()">
             <i class="fas fa-bars"></i>
         </div>
@@ -17,10 +17,13 @@
             <div class="hamburger" onclick="toggleNav()">
                 <i class="fas fa-times"></i>
             </div>
-            <a href="index.html">Home</a>
+            <a href="/index.html">Home</a>
             <a href="ruangbahasa.html">Tentang</a>
             <a href="#" class="active">Developer</a>
-            <a href="dragdrop.html">Login</a>
+            <a href="login.html" id="login-link">Login</a>
+            <a href="profile.html" id="profile-icon" style="display: none;">
+                <i class="fas fa-user"></i>
+            </a>
         </nav>
     </header>
     <section class="home">
@@ -40,5 +43,6 @@
         </div>
     </section>
     <script src="hamburger.js"></script>
+    <script src="auth.js"></script>
 </body>
 </html>

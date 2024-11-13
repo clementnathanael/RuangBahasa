@@ -14,7 +14,15 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         });
 
         if (response.ok) {
-            // Redirect to page2.html if credentials are correct
+            // Parse the response to get the user data, including the user ID
+            const result = await response.json();
+
+            // Save user_id to localStorage for tracking across pages
+            localStorage.setItem('user_id', result.user_id);
+            console.log("User ID saved to localStorage:", result.user_id);
+            localStorage.setItem('username', username);
+
+            // Redirect to the quiz or dashboard page
             window.location.href = 'page2.html';
         } else {
             // Show error message if username or password is incorrect

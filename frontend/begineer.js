@@ -94,6 +94,8 @@ const questions = [
 let currentQuestionIndex = 0;
 const userAnswers = {};
 let isSubmitted = false;
+const userId = localStorage.getItem('user_id'); 
+const quizId = 1; // Set quiz ID if you have multiple quizzes
 
 function loadQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
@@ -131,6 +133,7 @@ function loadQuestion() {
         optionInput.addEventListener('change', (event) => {
             userAnswers[currentQuestionIndex] = event.target.value;
             document.getElementById(`nav-${currentQuestionIndex + 1}`).classList.add('answered');
+            // saveProgress(); // Save progress whenever a new answer is selected
         });
     }
 
@@ -184,12 +187,11 @@ document.getElementById('prev-btn').addEventListener('click', () => {
     loadQuestion();
 });
 
-document.getElementById('quizForm').addEventListener('submit', function(event) {
+document.getElementById('quizForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
     let score = 0;
     for (let i = 0; i < questions.length; i++) {
-        const questionId = `q${i + 1}`;
         const selectedOption = userAnswers[i];
         const correctAnswer = questions[i].answer;
         
@@ -201,7 +203,6 @@ document.getElementById('quizForm').addEventListener('submit', function(event) {
                 document.getElementById(`nav-${i + 1}`).classList.add('wrong');
             }
         } else {
-            // Mark unanswered questions as wrong
             document.getElementById(`nav-${i + 1}`).classList.add('wrong');
         }
 
@@ -216,6 +217,10 @@ document.getElementById('quizForm').addEventListener('submit', function(event) {
     isSubmitted = true;
     updateButtons();
 
+
+    // Save final progress when quiz is submitted
+    // await saveProgress();
+
     // Disable all radio buttons
     questions.forEach((question, index) => {
         document.querySelectorAll(`input[name="q${index + 1}"]`).forEach(input => {
@@ -224,8 +229,56 @@ document.getElementById('quizForm').addEventListener('submit', function(event) {
     });
 });
 
-document.getElementById('finish-btn').addEventListener('click', () => {
-    window.location.href = 'page2.html';
+
+document.getElementById('finish-btn').addEventListener('click', async () => {
+    
+    await saveProgress(); // Save the final progress
+    window.location.href = 'page2.html'; // Redirect to next page or display finish message
 });
+
+async function saveProgress() {
+    console.log("test")
+    // Prepare progress data
+    const progressData = questions.map((question, index) => {
+        return {
+            question_number: index + 1,
+            user_answer: userAnswers[index] || null,  // If no answer, set to null
+            correct_answer: question.answer,
+            score: userAnswers[index] === question.answer ? 10 : 0 // Calculate score based on answer
+        };
+    });
+
+    console.log('Sending progress data to backend:', {
+        user_id: userId,  // Ensure the correct userId is dynamically set
+        quiz_id: quizId,  // Ensure the correct quizId is set
+        progress: progressData
+    });
+
+    try {
+        // Make sure the correct URL is used (change localhost to the actual backend URL if not on the same domain)
+        const response = await fetch('http://localhost:3000/save-progress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                quiz_id: quizId,
+                progress: progressData
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.message === 'Progress saved successfully') {
+            console.log('Progress saved successfully.');
+        } else {
+            console.error('Failed to save progress:', result);
+        }
+    } catch (error) {
+        console.error('Error saving progress:', error);
+    }
+}
+
 
 loadQuestion();
