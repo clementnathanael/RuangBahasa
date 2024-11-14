@@ -10,11 +10,13 @@ const app = express();
 // Middleware setup
 // Configure CORS
 app.use(cors({
-    origin: 'https://ruang-bahasa.vercel.app', // Allow requests from this origin
-    methods: 'GET,POST,PUT,DELETE',
-    allowedHeaders: 'Content-Type,Authorization'
+    origin: 'https://ruang-bahasa.vercel.app',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true // If you need cookies/sessions
 }));
 app.use(bodyParser.json());
+app.options('*', cors());
 
 // Database connection
 const db = mysql.createConnection({
