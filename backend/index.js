@@ -8,7 +8,12 @@ const bcrypt = require('bcrypt');
 const app = express();
 
 // Middleware setup
-app.use(cors());
+// Configure CORS
+app.use(cors({
+    origin: 'https://ruang-bahasa.vercel.app', // Allow requests from this origin
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization'
+}));
 app.use(bodyParser.json());
 
 // Database connection
@@ -252,6 +257,6 @@ app.post('/reset-quiz', (req, res) => {
 
 
 // Start the server
-app.listen(5003, () => {
-    console.log('Server is running on port 5003');
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
 });
