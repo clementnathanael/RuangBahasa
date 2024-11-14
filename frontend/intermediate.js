@@ -94,6 +94,9 @@ const questions = [
 let currentQuestionIndex = 0;
 const userAnswers = {};
 let isSubmitted = false;
+const userId = localStorage.getItem('user_id'); 
+const quizId = 2; // Set quiz ID if you have multiple quizzes
+
 
 function loadQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
@@ -131,6 +134,7 @@ function loadQuestion() {
         optionInput.addEventListener('change', (event) => {
             userAnswers[currentQuestionIndex] = event.target.value;
             document.getElementById(`nav-${currentQuestionIndex + 1}`).classList.add('answered');
+            // saveProgress(); // Save progress whenever a new answer is selected
         });
     }
 
@@ -184,24 +188,22 @@ document.getElementById('prev-btn').addEventListener('click', () => {
     loadQuestion();
 });
 
-document.getElementById('quizForm').addEventListener('submit', function(event) {
+document.getElementById('quizForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    let score = 0;
+    let total_score_user = 0;
     for (let i = 0; i < questions.length; i++) {
-        const questionId = `q${i + 1}`;
         const selectedOption = userAnswers[i];
         const correctAnswer = questions[i].answer;
         
         if (selectedOption) {
             if (selectedOption === correctAnswer) {
                 document.getElementById(`nav-${i + 1}`).classList.add('true');
-                score++;
+                total_score_user++;
             } else {
                 document.getElementById(`nav-${i + 1}`).classList.add('wrong');
             }
         } else {
-            // Mark unanswered questions as wrong
             document.getElementById(`nav-${i + 1}`).classList.add('wrong');
         }
 
@@ -212,9 +214,13 @@ document.getElementById('quizForm').addEventListener('submit', function(event) {
         }
     }
 
-    document.getElementById('result').innerText = 'Nilaimu adalah: ' + score * 10;
+    document.getElementById('result').innerText = 'Nilaimu adalah: ' + total_score_user * 10;
     isSubmitted = true;
     updateButtons();
+
+
+    // Save final progress when quiz is submitted
+    // await saveProgress();
 
     // Disable all radio buttons
     questions.forEach((question, index) => {
@@ -224,8 +230,61 @@ document.getElementById('quizForm').addEventListener('submit', function(event) {
     });
 });
 
-document.getElementById('finish-btn').addEventListener('click', () => {
-    window.location.href = 'page2.html';
+
+document.getElementById('finish-btn').addEventListener('click', async () => {
+    
+    await saveProgress(); // Save the final progress
+    window.location.href = 'page2.html'; // Redirect to next page or display finish message
 });
+
+async function saveProgress() {
+    // Prepare progress data
+    const progressData = questions.map((question, index) => {
+        return {
+            question_number: index + 1,
+            user_answer: userAnswers[index] || null,  // If no answer, set to null
+            correct_answer: question.answer,
+            score: userAnswers[index] === question.answer ? 10 : 0 // Calculate score based on answer
+        };
+    });
+
+    const totalScore = progressData.reduce((acc, item) => acc + item.score, 0);
+    console.log('Total Score:', totalScore); // Log the total score to verify
+
+    console.log('Sending progress data to backend:', {
+        user_id: userId,  // Ensure the correct userId is dynamically set
+        quiz_id: quizId,  // Ensure the correct quizId is set
+        progress: progressData,
+        total_score: totalScore
+    });
+
+    try {
+        // Make sure the correct URL is used (change localhost to the actual backend URL if not on the same domain)
+        const response = await fetch('http://localhost:3000/save-progress', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: userId,
+                quiz_id: quizId,
+                progress: progressData,
+                total_score: totalScore
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.message === 'Progress saved successfully') {
+            console.log('Progress saved successfully.');
+            localStorage.setItem('completed_quiz_id2', quizId);
+        } else {
+            console.error('Failed to save progress:', result);
+        }
+    } catch (error) {
+        console.error('Error saving progress:', error);
+    }
+}
+
 
 loadQuestion();

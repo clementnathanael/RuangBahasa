@@ -989,3 +989,46 @@ body {
     margin-bottom: 1rem;
     font-weight: 600;
 }
+
+.quiz-progress h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    margin-top:10rem;
+    margin-left: 15rem;
+}
+
+.quiz-progress #progress-status {
+    font-size: 1.5em;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    margin-left: 15rem;
+}
+
+.quiz-progress #score {
+    font-size: 1.5em;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    margin-left: 15rem;
+}
+
+.quiz-progress button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 1,5rem;
+    font-weight: 500;
+    color: white;
+    background-color: black;
+    border-radius: 4rem;
+    margin: 1rem;
+    transition: 0.3s ease;
+    cursor: pointer;
+    margin-left: 140px;
+    margin-top: 50px;
+}
+
+.quiz-progress button:hover {
+    background-color: #082387;
+    color: white;
+    transform: scale(1.1);
+}

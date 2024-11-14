@@ -3,6 +3,22 @@ document.getElementById('signupForm').addEventListener('submit', async function(
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = 'Passwords do not match.';
+        errorMessage.style.display = 'block';
+        errorMessage.classList.add('show');
+
+        // Hide the error message after 3 seconds
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+            errorMessage.classList.remove('show');
+        }, 3000);
+        return;
+    }
 
     try {
         const response = await fetch('http://localhost:3000/signup', {
@@ -24,10 +40,9 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 3000);
-        } else if (response.status === 409) {
-            // Username already exists
+        } else {
             const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = 'Username already exists';
+            errorMessage.textContent = 'Signup failed. Please try again.';
             errorMessage.style.display = 'block';
             errorMessage.classList.add('show');
 
@@ -35,15 +50,6 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             setTimeout(() => {
                 errorMessage.style.display = 'none';
                 errorMessage.classList.remove('show');
-            }, 3000);
-        } else {
-            // Show general error message
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = 'Error signing up';
-            errorMessage.style.display = 'block';
-
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
             }, 3000);
         }
     } catch (error) {

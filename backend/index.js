@@ -86,10 +86,10 @@ app.post('/login', async (req, res) => {
 // Save user quiz progress route
 // POST endpoint for saving progress
 app.post('/save-progress', async (req, res) => {
-    const { user_id, quiz_id, progress } = req.body;
+    const { user_id, quiz_id, progress, total_score } = req.body;
 
     // Check if the required data is provided
-    if (!user_id || !quiz_id || !Array.isArray(progress)) {
+    if (!user_id || !quiz_id || !Array.isArray(progress) || total_score === undefined) {
         return res.status(400).json({ message: 'Invalid data provided' });
     }
 
@@ -102,12 +102,20 @@ app.post('/save-progress', async (req, res) => {
         }
 
         const insertProgressQuery = `
-            INSERT INTO user_quiz_progress (user_id, quiz_id, question_number, user_answer, correct_answer, score)
-            VALUES (?, ?, ?, ?, ?, ?) 
+            INSERT INTO user_quiz_progress (user_id, quiz_id, question_number, user_answer, correct_answer, score, total_score)
+            VALUES (?, ?, ?, ?, ?, ?, ?) 
             ON DUPLICATE KEY UPDATE
                 user_answer = VALUES(user_answer),
                 correct_answer = VALUES(correct_answer),
-                score = VALUES(score)
+                score = VALUES(score),
+                total_score = VALUES(total_score)
+        `;
+
+        const insertQuizProgress = `
+            INSERT INTO user_progress (user_id, quiz_id, total_score)
+            VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE
+                total_score = VALUES(total_score)
         `;
 
         // Loop through each question and save progress
@@ -115,7 +123,7 @@ app.post('/save-progress', async (req, res) => {
             const { question_number, user_answer, correct_answer, score } = question;
 
             if (question_number && (user_answer !== undefined || user_answer === null)) {
-                console.log(`Saving progress for question ${question_number}:`, { user_answer, correct_answer, score });
+                console.log(`Saving progress for question ${question_number}:`, { user_answer, correct_answer, score, total_score });
 
                 // Execute SQL to save the progress
                 await queryDb(insertProgressQuery, [
@@ -124,12 +132,16 @@ app.post('/save-progress', async (req, res) => {
                     question_number,
                     user_answer,
                     correct_answer,
-                    score
+                    score,
+                    total_score
                 ]);
+
             } else {
                 console.warn(`Skipped invalid progress data for question: ${JSON.stringify(question)}`);
             }
         }
+
+        await queryDb(insertQuizProgress, [user_id, quiz_id, total_score]);
 
         // Respond with a success message
         res.status(201).json({ message: 'Progress saved successfully' });
@@ -167,6 +179,63 @@ app.post('/change-password', async (req, res) => {
                 return res.status(500).send({ message: 'Error updating password' });
             }
             res.send({ message: 'Password changed successfully' });
+        });
+    });
+});
+
+// Fetch quiz progress
+app.get('/quiz-progress', (req, res) => {
+    const { username, quiz_id } = req.query;
+    const getUserQuery = 'SELECT user_id FROM users WHERE username = ?';
+    
+    db.query(getUserQuery, [username], (err, userResults) => {
+        if (err) {
+            console.error('Error fetching user ID:', err);
+            return res.status(500).send({ message: 'Error fetching user ID' });
+        }
+        if (userResults.length === 0) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        const user_id = userResults[0].user_id;
+        const getProgressQuery = 'SELECT quiz_id, total_score FROM user_progress WHERE user_id = ? AND quiz_id = ?';
+        
+        db.query(getProgressQuery, [user_id, quiz_id], (err, progressResults) => {
+            if (err) {
+                console.error('Error fetching quiz progress:', err);
+                return res.status(500).send({ message: 'Error fetching quiz progress' });
+            }
+            if (progressResults.length === 0) {
+                return res.send({ status: 'not_started' });
+            }
+            res.send(progressResults[0]);
+        });
+    });
+});
+
+// Reset quiz
+app.post('/reset-quiz', (req, res) => {
+    const { username, quiz_id } = req.query;
+    const getUserQuery = 'SELECT user_id FROM users WHERE username = ?';
+    
+    db.query(getUserQuery, [username], (err, userResults) => {
+        if (err) {
+            console.error('Error fetching user ID:', err);
+            return res.status(500).send({ message: 'Error fetching user ID' });
+        }
+        if (userResults.length === 0) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        const user_id = userResults[0].user_id;
+        const resetProgressQuery = 'DELETE FROM user_progress WHERE user_id = ? AND quiz_id = ?';
+        
+        db.query(resetProgressQuery, [user_id, quiz_id], (err, result) => {
+            if (err) {
+                console.error('Error resetting quiz:', err);
+                return res.status(500).send({ message: 'Error resetting quiz' });
+            }
+            res.send({ message: 'Quiz reset successfully' });
         });
     });
 });

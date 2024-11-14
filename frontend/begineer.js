@@ -97,6 +97,7 @@ let isSubmitted = false;
 const userId = localStorage.getItem('user_id'); 
 const quizId = 1; // Set quiz ID if you have multiple quizzes
 
+
 function loadQuestion() {
     const currentQuestion = questions[currentQuestionIndex];
     document.getElementById('question').innerText = currentQuestion.question;
@@ -190,7 +191,7 @@ document.getElementById('prev-btn').addEventListener('click', () => {
 document.getElementById('quizForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    let score = 0;
+    let total_score_user = 0;
     for (let i = 0; i < questions.length; i++) {
         const selectedOption = userAnswers[i];
         const correctAnswer = questions[i].answer;
@@ -198,7 +199,7 @@ document.getElementById('quizForm').addEventListener('submit', async function(ev
         if (selectedOption) {
             if (selectedOption === correctAnswer) {
                 document.getElementById(`nav-${i + 1}`).classList.add('true');
-                score++;
+                total_score_user++;
             } else {
                 document.getElementById(`nav-${i + 1}`).classList.add('wrong');
             }
@@ -213,7 +214,7 @@ document.getElementById('quizForm').addEventListener('submit', async function(ev
         }
     }
 
-    document.getElementById('result').innerText = 'Nilaimu adalah: ' + score * 10;
+    document.getElementById('result').innerText = 'Nilaimu adalah: ' + total_score_user * 10;
     isSubmitted = true;
     updateButtons();
 
@@ -237,7 +238,6 @@ document.getElementById('finish-btn').addEventListener('click', async () => {
 });
 
 async function saveProgress() {
-    console.log("test")
     // Prepare progress data
     const progressData = questions.map((question, index) => {
         return {
@@ -248,10 +248,14 @@ async function saveProgress() {
         };
     });
 
+    const totalScore = progressData.reduce((acc, item) => acc + item.score, 0);
+    console.log('Total Score:', totalScore); // Log the total score to verify
+
     console.log('Sending progress data to backend:', {
         user_id: userId,  // Ensure the correct userId is dynamically set
         quiz_id: quizId,  // Ensure the correct quizId is set
-        progress: progressData
+        progress: progressData,
+        total_score: totalScore
     });
 
     try {
@@ -264,7 +268,8 @@ async function saveProgress() {
             body: JSON.stringify({
                 user_id: userId,
                 quiz_id: quizId,
-                progress: progressData
+                progress: progressData,
+                total_score: totalScore
             })
         });
 
@@ -272,6 +277,7 @@ async function saveProgress() {
 
         if (response.ok && result.message === 'Progress saved successfully') {
             console.log('Progress saved successfully.');
+            localStorage.setItem('completed_quiz_id1', quizId);
         } else {
             console.error('Failed to save progress:', result);
         }
