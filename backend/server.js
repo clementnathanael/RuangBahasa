@@ -93,25 +93,26 @@ app.get("/", (req, res) => {
 })();
 
 
-const queryDb = async (query, params) => {
+const queryDb = async (query, params = []) => {
   try {
-    // Check if the query is a non-empty string
+    // Validate query: ensure it’s a non-empty string
     if (typeof query !== 'string' || !query.trim()) {
-      console.error('queryDb called with invalid query:', query);
+      console.error('queryDb called with invalid query:', { query });
       throw new Error('Invalid SQL query: Query must be a non-empty string');
     }
 
     // Ensure params is an array
     if (!Array.isArray(params)) {
+      console.warn('Parameters were not an array. Wrapping in an array:', { params });
       params = [params];
     }
 
-    // Ensure the pool is initialized
+    // Validate pool
     if (!pool) {
       throw new Error('Database connection pool is not initialized');
     }
 
-    // Log the query and params for debugging
+    // Debugging logs
     console.log('Executing Query:', query);
     console.log('With Parameters:', params);
 
@@ -119,7 +120,12 @@ const queryDb = async (query, params) => {
     const [rows] = await pool.execute(query, params);
     return rows;
   } catch (error) {
-    console.error('Database query error:', error);
+    console.error('Database query error:', {
+      message: error.message,
+      query,
+      params,
+      stack: error.stack,
+    });
     throw error;
   }
 };
