@@ -28,10 +28,10 @@ dotenv.config();
 
 const db = await mysql.createConnection({
   host: process.env.MYSQLHOST,
+  database: process.env.MYSQLDATABASE,
   port: process.env.MYSQLPORT,
   user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE
+  password: process.env.MYSQLPASSWORD
 });
 
 
@@ -39,7 +39,9 @@ const db = await mysql.createConnection({
 
 const app = express();
 
+
 try {
+  
   // Test connection with a simple query
   const [rows] = await db.query('SELECT 1');
   console.log('Connection successful');
