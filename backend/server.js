@@ -40,14 +40,14 @@ const db = await mysql.createConnection({
 const app = express();
 
 
-try {
+// try {
   
-  // Test connection with a simple query
-  const [rows] = await db.query('SELECT 1');
-  console.log('Connection successful');
-} catch (error) {
-  console.error('Unable to connect to the database:', error);
-}
+//   // Test connection with a simple query
+//   const [rows] = await db.query('SELECT 1');
+//   console.log('Connection successful');
+// } catch (error) {
+//   console.error('Unable to connect to the database:', error);
+// }
 
 
 
