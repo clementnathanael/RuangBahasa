@@ -26,12 +26,23 @@ import signup from "./api/signup.js";
 dotenv.config();
 
 
-const db = await mysql.createConnection({
+// const db = await mysql.createConnection({
+//   host: process.env.MYSQLHOST,
+//   database: process.env.MYSQLDATABASE,
+//   port: process.env.MYSQLPORT,
+//   user: process.env.MYSQLUSER,
+//   password: process.env.MYSQLPASSWORD
+// });
+
+const pool = mysql.createPool({
   host: process.env.MYSQLHOST,
-  database: process.env.MYSQLDATABASE,
   port: process.env.MYSQLPORT,
   user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 
@@ -68,6 +79,18 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
     res.json({ message: "Welcome to Ruang Bahasa application." });
 });
+
+// Check database connection
+(async () => {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    console.log("Database Connected...");
+    connection.release();
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
+})();
 
 
 // Utility function for querying the database with promises
