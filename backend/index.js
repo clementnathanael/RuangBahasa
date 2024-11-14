@@ -19,11 +19,11 @@ const db = mysql.createConnection({
     database: 'ruangbahasa'
 });
 
-const corsOptions = {
-    origin: 'http://localhost:3000', // or '*'
-    optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
+// const corsOptions = {
+//     origin: 'http://localhost:3000', // or '*'
+//     optionsSuccessStatus: 200
+// };
+// app.use(cors(corsOptions));
 
 
 db.connect((err) => {
