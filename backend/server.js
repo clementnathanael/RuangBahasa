@@ -64,14 +64,8 @@ app.get("/", (req, res) => {
 
 
 // Utility function for querying the database with promises
-const queryDb = async (query, params) => {
-  try {
-    const [rows] = await db.query(query, params);
-    return rows;
-  } catch (error) {
-    console.error('Database query error:', error);
-    throw error;
-  }
+const queryDb = (query, params) => {
+    return db.promise().query(query, params);
 };
 
 
