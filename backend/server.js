@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import mysql2 from "mysql2";
+import mysql from "mysql2/promise";
 
 
 
@@ -63,8 +64,14 @@ app.get("/", (req, res) => {
 
 
 // Utility function for querying the database with promises
-const queryDb = (query, params) => {
-    return db.promise().query(query, params);
+const queryDb = async (query, params) => {
+  try {
+    const [rows] = await db.query(query, params);
+    return rows;
+  } catch (error) {
+    console.error('Database query error:', error);
+    throw error;
+  }
 };
 
 
