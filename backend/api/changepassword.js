@@ -7,6 +7,7 @@ import dotenv from "dotenv";
 import mysql2 from "mysql2";
 import db from "../server.js";
 import queryDb from "../server.js";
+const router = express.Router();
 
 router.post("/", async (req, res) => {
     const { username, currentPassword, newPassword } = req.body;

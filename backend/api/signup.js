@@ -8,9 +8,6 @@ import mysql2 from "mysql2";
 import db from "../server.js";
 import queryDb from "../server.js";
 
-const queryDb = (query, params) => {
-    return db.promise().query(query, params);
-};
 
 const router = express.Router();
 

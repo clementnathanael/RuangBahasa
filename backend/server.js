@@ -8,21 +8,17 @@ import dotenv from "dotenv";
 import mysql2 from "mysql2";
 
 
+
 // Import rute API
 import login from "./api/login.js";
-import changepass from "./api/change-password.js";
-import quizprogress from "./api/quiz-progress.js";
-import resetquiz from "./api/reset-quiz";
-import saveprogress from "./api/save-progress.js";
+import changepass from "./api/changepassword.js";
+import quizprogress from "./api/quizprogress.js";
+import resetquiz from "./api/resetquiz.js";
+import saveprogress from "./api/saveprogress.js";
 import signup from "./api/signup.js";
 
-// Rute API
-app.use("/signup", signup);
-app.use("/login", login);
-app.use("/save-progress", saveprogress); // Rute untuk verifikasi token
-app.use("/change-password", changepass); // Rute untuk signup
-app.use("/quiz-progress", quizprogress); // Rute untuk login
-app.use("/reset-quiz", resetquiz);
+
+
 
 // Check database connection
 
@@ -33,6 +29,8 @@ const db = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER, proce
   dialect: "mysql",
   logging: false,
 });
+// export default db;
+
 const app = express();
 
 try {
@@ -41,6 +39,8 @@ try {
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
+
+
 
 
 
@@ -68,11 +68,23 @@ const queryDb = (query, params) => {
 };
 
 
+  export default queryDb;
+
+// Rute API
+app.use("/signup", signup);
+app.use("/login", login);
+app.use("/save-progress", saveprogress); // Rute untuk verifikasi token
+app.use("/change-password", changepass); // Rute untuk signup
+app.use("/quiz-progress", quizprogress); // Rute untuk login
+app.use("/reset-quiz", resetquiz);
+
 
 // Start the server
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+
+
 
 
 
