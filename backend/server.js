@@ -125,8 +125,6 @@ const queryDb = async (query, params) => {
 };
 
 
-  export default queryDb;
-
 // Rute API
 app.use("/signup", signup);
 app.use("/login", login);
@@ -140,6 +138,8 @@ app.use("/reset-quiz", resetquiz);
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+
+export default queryDb;
 
 
 
