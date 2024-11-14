@@ -10,6 +10,7 @@ import mysql from "mysql2/promise";
 
 
 
+
 // Import rute API
 import login from "./api/login.js";
 import changepass from "./api/changepassword.js";
@@ -17,7 +18,6 @@ import quizprogress from "./api/quizprogress.js";
 import resetquiz from "./api/resetquiz.js";
 import saveprogress from "./api/saveprogress.js";
 import signup from "./api/signup.js";
-
 
 
 
@@ -30,6 +30,7 @@ const db = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER, proce
   dialect: "mysql",
   logging: false,
 });
+
 // export default db;
 
 const app = express();
@@ -64,9 +65,15 @@ app.get("/", (req, res) => {
 
 
 // Utility function for querying the database with promises
-const queryDb = (query, params) => {
-    return db.promise().query(query, params);
-};
+async function queryDb(query, params) {
+  try {
+    const [results, metadata] = await db.query(query, { replacements: params });
+    return results;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    throw error;
+  }
+}
 
 
   export default queryDb;
