@@ -94,19 +94,25 @@ app.get("/", (req, res) => {
 
 
 // Utility function for querying the database with promises
-const queryDb = async (query, params) => {
+const queryDb = async (query, params = []) => {
   try {
     // Ensure params is an array
     if (!Array.isArray(params)) {
       params = [params];
     }
+
+    // Log the query and params to debug in case of errors
+    console.log('Executing Query:', query);
+    console.log('With Parameters:', params);
+
     const [rows] = await pool.execute(query, params);
     return rows;
   } catch (error) {
-    console.error('Database query error:', error);
+    console.error('Database query error:', error.message);
     throw error;
   }
 };
+
 
 
   export default queryDb;
