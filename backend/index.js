@@ -25,6 +25,9 @@ const db = mysql.createConnection({
 // };
 // app.use(cors(corsOptions));
 
+app.get("/", (req, res) => {
+    res.json({ message: "Welcome to Ruang Bahasa application." });
+});
 
 db.connect((err) => {
     if (err) {
@@ -249,6 +252,6 @@ app.post('/reset-quiz', (req, res) => {
 
 
 // Start the server
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+app.listen(5003, () => {
+    console.log('Server is running on port 5003');
 });
