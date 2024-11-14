@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('logout-btn').addEventListener('click', () => {
         localStorage.removeItem('username');
-        window.location.href = 'http://127.0.0.1:5500/index.html'; // Redirect to home page after logout
+        window.location.href = '/index.html'; // Redirect to home page after logout
     });
 
     document.getElementById('change-pass').addEventListener('click', () => {
