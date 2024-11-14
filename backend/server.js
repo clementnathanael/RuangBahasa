@@ -100,7 +100,7 @@ const queryDb = async (query, params) => {
     if (!Array.isArray(params)) {
       params = [params];
     }
-    const [rows] = await db.execute(query, params);
+    const [rows] = await pool.execute(query, params);
     return rows;
   } catch (error) {
     console.error('Database query error:', error);
