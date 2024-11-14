@@ -1,11 +1,29 @@
 // Import required modules
-const express = require('express');
-const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const bcrypt = require('bcrypt');
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import bcrypt from "bcrypt";
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
+import mysql2 from "mysql2";
 
+// Check database connection
+
+dotenv.config();
+const db = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER, process.env.MYSQLPASSWORD, {
+  host: process.env.MYSQLHOST,
+  port: process.env.MYSQLPORT,
+  dialect: "mysql",
+  logging: false,
+});
 const app = express();
+
+try {
+    await db.authenticate();
+    console.log("Database Connected...");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
 
 // Middleware setup
 // Configure CORS
@@ -24,7 +42,7 @@ const corsOptions = {
 };
 
 app.get("/", (req, res) => {
-    res.json({ message: "Test"});
+    res.json({message: "Test"});
 });
 
 app.use(cors(corsOptions));
@@ -41,12 +59,7 @@ app.use(bodyParser.json());
 // })
 
 // Database connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'Clement100*',
-    database: 'ruangbahasa'
-});
+
 
 // const corsOptions = {
 //     origin: 'http://localhost:3000', // or '*'
@@ -58,13 +71,13 @@ app.get("/", (req, res) => {
     res.json({ message: "Welcome to Ruang Bahasa application." });
 });
 
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err.stack);
-    } else {
-        console.log('Connected to MySQL');
-    }
-});
+// db.connect((err) => {
+//     if (err) {
+//         console.error('Database connection failed:', err.stack);
+//     } else {
+//         console.log('Connected to MySQL');
+//     }
+// });
 
 // Utility function for querying the database with promises
 const queryDb = (query, params) => {
@@ -284,3 +297,5 @@ app.post('/reset-quiz', (req, res) => {
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+
+
