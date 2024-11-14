@@ -93,8 +93,7 @@ app.get("/", (req, res) => {
 })();
 
 
-// Utility function for querying the database with promises
-const queryDb = async (query, params = []) => {
+const queryDb = async (query, params) => {
   try {
     // Check if the query is a non-empty string
     if (typeof query !== 'string' || !query.trim()) {
@@ -119,20 +118,11 @@ const queryDb = async (query, params = []) => {
     // Execute the query
     const [rows] = await pool.execute(query, params);
     return rows;
-
   } catch (error) {
-    // Log the error details, including query and params
-    console.error('Database query error:', {
-      message: error.message,
-      query: query || 'No query provided',
-      params: params || 'No parameters provided',
-      stack: error.stack
-    });
+    console.error('Database query error:', error);
     throw error;
   }
 };
-
-
 
 
   export default queryDb;
