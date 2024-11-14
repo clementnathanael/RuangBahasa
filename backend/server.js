@@ -70,10 +70,13 @@ app.get("/", (req, res) => {
 });
 
 
-
 // Utility function for querying the database with promises
 const queryDb = async (query, params) => {
   try {
+    // Ensure params is an array
+    if (!Array.isArray(params)) {
+      params = [params];
+    }
     const [rows] = await db.execute(query, params);
     return rows;
   } catch (error) {
