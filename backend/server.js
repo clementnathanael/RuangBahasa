@@ -24,23 +24,28 @@ import signup from "./api/signup.js";
 // Check database connection
 
 dotenv.config();
-const db = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER, process.env.MYSQLPASSWORD, {
+
+
+const db = await mysql.createConnection({
   host: process.env.MYSQLHOST,
   port: process.env.MYSQLPORT,
-  dialect: "mysql",
-  logging: false,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE
 });
+
 
 // export default db;
 
 const app = express();
 
 try {
-    await db.authenticate();
-    console.log("Database Connected...");
-  } catch (error) {
-    console.error("Unable to connect to the database:", error);
-  }
+  // Test connection with a simple query
+  const [rows] = await db.query('SELECT 1');
+  console.log('Connection successful');
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
 
 
 
@@ -65,15 +70,15 @@ app.get("/", (req, res) => {
 
 
 // Utility function for querying the database with promises
-async function queryDb(query, params) {
+const queryDb = async (query, params) => {
   try {
-    const [results, metadata] = await db.query(query, { replacements: params });
-    return results;
+    const [rows] = await db.execute(query, params);
+    return rows;
   } catch (error) {
-    console.error('Error executing query:', error);
+    console.error('Database query error:', error);
     throw error;
   }
-}
+};
 
 
   export default queryDb;
