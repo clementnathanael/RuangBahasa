@@ -9,14 +9,36 @@ const app = express();
 
 // Middleware setup
 // Configure CORS
-app.use(cors({
-    origin: 'https://ruang-bahasa.vercel.app',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true // If you need cookies/sessions
-}));
+// app.use(cors({
+//     origin: 'https://ruang-bahasa.vercel.app',
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization'],
+//     credentials: true // If you need cookies/sessions
+// }));
+
+const corsOptions = {
+    origin: ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://ruangbahasa-be.vercel.app'], // Allow requests from these origins
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+    optionsSuccessStatus: 200
+};
+
+app.get("/", (req, res) => {
+    res.json({ message: "Test"});
+});
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.options('*', cors());
+// // app.options('*', cors());
+
+// fetch('http://localhost:3000/example', {
+//     mode: 'no-cors',
+//     method: "post",
+//     headers: {
+//          "Content-Type": "application/json"
+//     },
+//     body: JSON.stringify(ob)
+// })
 
 // Database connection
 const db = mysql.createConnection({
