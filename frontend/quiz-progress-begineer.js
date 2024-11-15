@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const response = await fetch(`https://ruangbahasa-be.vercel.app/quiz-progress?username=${username}&quiz_id=${quizId}`);
+        const response = await fetch(`https://ruang-bahasa-be2.vercel.app/quiz-progress?username=${username}&quiz_id=${quizId}`);
         const result = await response.json();
 
         const progressStatus = document.getElementById('progress-status');

@@ -21,7 +21,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
     }
 
     try {
-        const response = await fetch('https://ruangbahasa-be.vercel.app/signup', {
+        const response = await fetch('https://ruang-bahasa-be2.vercel.app/signup', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
