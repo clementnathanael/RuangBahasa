@@ -2,153 +2,78 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
-import bcrypt from "bcryptjs";
-import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
-import mysql2 from "mysql2";
 import mysql from "mysql2/promise";
 
-
-
-
-// Import rute API
-import login from "./api/login.js";
+// Import API routes
 import changepass from "./api/changepassword.js";
 import quizprogress from "./api/quizprogress.js";
 import resetquiz from "./api/resetquiz.js";
 import saveprogress from "./api/saveprogress.js";
 import signup from "./api/signup.js";
+import login from "./api/login.js";
 
-
-
-// Check database connection
-
+// Load environment variables from .env file
 dotenv.config();
 
-
-// const db = await mysql.createConnection({
-//   host: process.env.MYSQLHOST,
-//   database: process.env.MYSQLDATABASE,
-//   port: process.env.MYSQLPORT,
-//   user: process.env.MYSQLUSER,
-//   password: process.env.MYSQLPASSWORD
-// });
-
-const pool = mysql.createPool({
+// MySQL Database Connection Pool
+export const pool = mysql.createPool({
   host: process.env.MYSQLHOST,
   port: process.env.MYSQLPORT,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
   waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  connectionLimit: 15,
+  queueLimit: 0,
+  connectTimeout: 20000,
 });
 
-
-// export default db;
-
+// Initialize Express application
 const app = express();
 
-
-// try {
-  
-//   // Test connection with a simple query
-//   const [rows] = await db.query('SELECT 1');
-//   console.log('Connection successful');
-// } catch (error) {
-//   console.error('Unable to connect to the database:', error);
-// }
-
-
-
-
-
-const corsOptions = {
-    origin: ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://ruangbahasa-be.vercel.app'], // Allow requests from these origins
-    methods: 'GET,POST,PUT,DELETE',
-    allowedHeaders: 'Content-Type,Authorization',
-    optionsSuccessStatus: 200
-};
-
-
-app.use(cors(corsOptions));
+// Middleware to enable CORS and parse incoming JSON requests
+app.use(cors());
 app.use(bodyParser.json());
 
-
+// Simple root route
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Ruang Bahasa application." });
+  res.json({ message: "Welcome to Ruang Bahasa application." });
 });
 
-// Check database connection
+// Check MySQL connection on server start and log any connection errors
 (async () => {
   try {
     const connection = await pool.getConnection();
-    await connection.ping();
+    await connection.ping(); // Ping the database to check connectivity
     console.log("Database Connected...");
-    connection.release();
+    connection.release(); // Release connection back to pool
   } catch (error) {
     console.error("Unable to connect to the database:", error);
+    // Optionally, send an email/alert for critical database issues
   }
 })();
 
-
-const queryDb = async (query, params = []) => {
+// Function to execute database queries
+const queryDb = async (query, params) => {
   try {
-    // Validate query: ensure it’s a non-empty string
-    if (typeof query !== 'string' || !query.trim()) {
-      console.error('queryDb called with invalid query:', { query });
-      throw new Error('Invalid SQL query: Query must be a non-empty string');
-    }
-
-    // Ensure params is an array
-    if (!Array.isArray(params)) {
-      console.warn('Parameters were not an array. Wrapping in an array:', { params });
-      params = [params];
-    }
-
-    // Validate pool
-    if (!pool) {
-      throw new Error('Database connection pool is not initialized');
-    }
-
-    // Debugging logs
-    console.log('Executing Query:', query);
-    console.log('With Parameters:', params);
-
-    // Execute the query
-    const [rows] = await pool.execute(query, params);
-    return rows;
+    const [rows] = await pool.query(query, params); // Perform query and get results
+    return rows; // Return results from query
   } catch (error) {
-    console.error('Database query error:', {
-      message: error.message,
-      query,
-      params,
-      stack: error.stack,
-    });
-    throw error;
+    console.error("Error in queryDb:", error); // Log query errors
+    throw error; // Rethrow error for handling upstream
   }
 };
 
+export { queryDb };
 
-// Rute API
-app.use("/signup", signup);
-app.use("/login", login);
-app.use("/save-progress", saveprogress); // Rute untuk verifikasi token
-app.use("/change-password", changepass); // Rute untuk signup
-app.use("/quiz-progress", quizprogress); // Rute untuk login
-app.use("/reset-quiz", resetquiz);
+// API Routes
+app.use("/signup", signup); // Route for user signup
+app.use("/login", login); // Route for user login
+app.use("/save-progress", saveprogress); // Route for saving progress
+app.use("/change-password", changepass); // Route for changing password
+app.use("/quiz-progress", quizprogress); // Route for quiz progress
+app.use("/reset-quiz", resetquiz); // Route for resetting quiz
 
-
-// Start the server
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
-
-export default queryDb;
-
-
-
-
-
-
+// Export the Express app for deployment (e.g., Vercel)
+export default app;
