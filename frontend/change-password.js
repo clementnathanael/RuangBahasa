@@ -1,3 +1,5 @@
+import { set } from "mongoose";
+
 document.getElementById('changePasswordForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -8,7 +10,7 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
 
     if (newPassword !== confirmPassword) {
         const errorMessage = document.getElementById('errorMessage');
-        errorMessage.textContent = 'New passwords do not match.';
+        errorMessage.textContent = 'Password baru tidak cocok.';
         errorMessage.style.display = 'block';
         return;
     }
@@ -39,6 +41,10 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
             const errorMessage = document.getElementById('errorMessage');
             errorMessage.textContent = result.message || 'Failed to change password.';
             errorMessage.style.display = 'block';
+
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
         }
     } catch (error) {
         console.error('Error:', error);

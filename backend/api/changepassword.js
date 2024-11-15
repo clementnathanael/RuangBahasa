@@ -17,7 +17,12 @@ router.post("/", async (req, res) => {
     const passwordMatch = await bcrypt.compare(currentPassword, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).send({ message: "Current password is incorrect" });
+      return res.status(401).send({ message: "Password awal salah." });
+    }
+
+    const newPasswordMatch = await bcrypt.compare(newPassword, user.password);
+    if (newPasswordMatch) {
+      return res.status(400).send({ message: "Password baru tidak boleh sama dengan password lama." });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);

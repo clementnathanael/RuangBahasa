@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
     if (existingUser.length > 0) {
       console.log("Username already exists.");
-      return res.status(409).json({ message: "Username sudah ada." });
+      return res.status(409).json({ message: "Username sudah ada. Silakan membuat username baru" });
     }
 
     // Hash the password
