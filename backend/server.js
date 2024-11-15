@@ -33,7 +33,12 @@ export const pool = mysql.createPool({
 const app = express();
 
 // Middleware to enable CORS and parse incoming JSON requests
-app.use(cors());
+app.use(cors({
+  origin: 'https://ruang-bahasa.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true // If you need cookies/sessions
+}));
 app.use(bodyParser.json());
 
 // Simple root route
