@@ -14,7 +14,7 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
     }
 
     try {
-        const response = await fetch('http://localhost:3000/change-password', {
+        const response = await fetch('https://ruangbahasa-be.vercel.app/change-password', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
