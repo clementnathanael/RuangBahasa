@@ -1,42 +1,67 @@
+// backend/api/saveprogress.js
 import express from "express";
-import bcrypt from "bcryptjs";
-import queryDb from "../server.js";
+import { queryDb } from "../server.js"; // Import queryDb from server.js
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { username, password } = req.body;
+  const { user_id, quiz_id, progress, total_score } = req.body;
 
-  console.log("Received signup request:", { username, password }); // Debugging request data
-
-  // Validate input
-  if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required." });
+  // Validate input data
+  if (!user_id || !quiz_id || !Array.isArray(progress) || total_score === undefined) {
+    return res.status(400).json({ message: "Invalid data provided" });
   }
 
   try {
-    // Check if the username already exists
-    console.log("Checking if username already exists in the database...");
-    const [existingUser] = await queryDb("SELECT * FROM users WHERE username = ?", [username]);
+    // Check if user exists
+    const users = await queryDb("SELECT * FROM users WHERE user_id = ?", [user_id]);
 
-    if (existingUser.length > 0) {
-      console.log("Username already exists.");
-      return res.status(409).json({ message: "Username already exists." });
+    if (users.length === 0) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // Hash the password
-    console.log("Hashing the password...");
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Query to save individual question progress
+    const insertProgressQuery = `
+      INSERT INTO user_quiz_progress (user_id, quiz_id, question_number, user_answer, correct_answer, score, total_score)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        user_answer = VALUES(user_answer),
+        correct_answer = VALUES(correct_answer),
+        score = VALUES(score),
+        total_score = VALUES(total_score)
+    `;
 
-    // Insert the new user into the database
-    console.log("Inserting new user into the database...");
-    await queryDb("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword]);
+    // Query to save quiz progress for the user
+    const insertQuizProgressQuery = `
+      INSERT INTO user_progress (user_id, quiz_id, total_score)
+      VALUES (?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        total_score = VALUES(total_score)
+    `;
 
-    console.log("Signup successful");
-    res.status(201).json({ message: "Signup successful" });
+    // Loop through progress array and save each question's data
+    const progressPromises = progress.map(async (question) => {
+      const { question_number, user_answer, correct_answer, score } = question;
+
+      if (question_number && (user_answer !== undefined || user_answer === null)) {
+        console.log(`Saving progress for question ${question_number}:`, { user_answer, correct_answer, score, total_score });
+
+        await queryDb(insertProgressQuery, [user_id, quiz_id, question_number, user_answer, correct_answer, score, total_score]);
+      } else {
+        console.warn(`Skipped invalid progress data for question: ${JSON.stringify(question)}`);
+      }
+    });
+
+    // Wait for all question progress to be saved
+    await Promise.all(progressPromises);
+
+    // Save overall quiz progress
+    await queryDb(insertQuizProgressQuery, [user_id, quiz_id, total_score]);
+
+    res.status(201).json({ message: "Progress saved successfully" });
   } catch (error) {
-    console.error("Error in signup:", error);
-    res.status(500).json({ message: "Error signing up", error: error.message });
+    console.error("Error saving progress:", error);
+    res.status(500).json({ message: "Error saving progress" });
   }
 });
 
