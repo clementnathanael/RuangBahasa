@@ -240,26 +240,42 @@ document.getElementById('finish-btn').addEventListener('click', async () => {
 async function saveProgress() {
     // Prepare progress data
     const progressData = questions.map((question, index) => {
+        const userAnswer = userAnswers[index] || null;  // Default to null if no answer selected
         return {
             question_number: index + 1,
-            user_answer: userAnswers[index] || null,  // If no answer, set to null
+            user_answer: userAnswer,
             correct_answer: question.answer,
-            score: userAnswers[index] === question.answer ? 10 : 0 // Calculate score based on answer
+            score: userAnswer === question.answer ? 10 : 0 // Calculate score based on answer
         };
     });
 
     const totalScore = progressData.reduce((acc, item) => acc + item.score, 0);
-    console.log('Total Score:', totalScore); // Log the total score to verify
 
-    console.log('Sending progress data to backend:', {
-        user_id: userId,  // Ensure the correct userId is dynamically set
-        quiz_id: quizId,  // Ensure the correct quizId is set
-        progress: progressData,
-        total_score: totalScore
-    });
+    console.log('Total Score:', totalScore); // Log the total score to verify
+    console.log('Progress Data:', progressData); // Log the progress data for debugging
+
+    // Ensure the correct userId is dynamically set
+    if (!userId) {
+        console.error('User ID is not found.');
+        return; // Prevent saving progress if no userId is found
+    }
+
+    // Ensure the correct quizId is set
+    if (!quizId) {
+        console.error('Quiz ID is not set.');
+        return; // Prevent saving progress if no quizId is found
+    }
 
     try {
-        // Make sure the correct URL is used (change localhost to the actual backend URL if not on the same domain)
+        // Log the data being sent to backend to verify correctness
+        console.log('Sending progress data to backend:', {
+            user_id: userId,
+            quiz_id: quizId,
+            progress: progressData,
+            total_score: totalScore
+        });
+
+        // Make sure the correct URL is used (adjust as necessary)
         const response = await fetch('https://ruangbahasa-be.vercel.app/save-progress', {
             method: 'POST',
             headers: {
@@ -285,6 +301,5 @@ async function saveProgress() {
         console.error('Error saving progress:', error);
     }
 }
-
 
 loadQuestion();
