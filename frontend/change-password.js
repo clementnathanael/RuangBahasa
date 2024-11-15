@@ -31,12 +31,9 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
             successMessage.classList.add('show');
         
             // Redirect to profile page
-            window.location.href = 'profile.html';
-        
-            // Redirect to login page after 3 seconds
             setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 5000);
+                window.location.href = 'profile.html';
+            }, 3000);
         
         
         } else {
