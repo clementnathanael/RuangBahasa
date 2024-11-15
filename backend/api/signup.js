@@ -11,7 +11,7 @@ router.post("/", async (req, res) => {
 
   // Validate input
   if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required." });
+    return res.status(400).json({ message: "Username dan password harus diisi." });
   }
 
   try {
@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
     if (existingUser.length > 0) {
       console.log("Username already exists.");
-      return res.status(409).json({ message: "Username already exists." });
+      return res.status(409).json({ message: "Username sudah ada." });
     }
 
     // Hash the password
@@ -38,7 +38,7 @@ router.post("/", async (req, res) => {
     console.log("Insertion result:", result);
 
     console.log("Signup successful");
-    res.status(201).json({ message: "Signup successful" });
+    res.status(201).json({ message: "Signup berhasil" });
   } catch (error) {
     console.error("Error in signup:", error);
     res.status(500).json({ message: "Error signing up", error: error.message });

@@ -25,8 +25,16 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
         const result = await response.json();
 
         if (response.ok) {
-            alert('Password changed successfully.');
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent('Password berhasil diubah.');
+            successMessage.style.display = 'block';
+            successMessage.classList.add('show');
             window.location.href = 'profile.html';
+
+            // Redirect to login page after 3 seconds
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000);
         } else {
             const errorMessage = document.getElementById('errorMessage');
             errorMessage.textContent = result.message || 'Failed to change password.';

@@ -34,7 +34,7 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         if (response.ok) {
             // Display success message
             const successMessage = document.getElementById('successMessage');
-            successMessage.textContent = 'Signup successful! Redirecting to login...';
+            successMessage.textContent = 'Signup berhasil! Mengarahkan ke halaman login...';
             successMessage.style.display = 'block';
             successMessage.classList.add('show');
 
