@@ -258,6 +258,7 @@ async function saveProgress() {
         total_score: totalScore
     });
 
+    
     try {
         // Make sure the correct URL is used (change localhost to the actual backend URL if not on the same domain)
         const response = await fetch('https://ruangbahasa-be.vercel.app/save-progress', {
