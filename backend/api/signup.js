@@ -1,36 +1,44 @@
+// backend/api/signup.js
 import express from "express";
-import bodyParser from "body-parser";
-import cors from "cors";
 import bcrypt from "bcryptjs";
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
-import mysql2 from "mysql2";
-import db from "../server.js";
-import queryDb from "../server.js";
-
+import { queryDb } from "../server.js"; // Menggunakan queryDb dari server.js
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-    const { username, password } = req.body;
+  const { username, password } = req.body;
 
-    try {
-        // Check if the username already exists
-        const [existingUser] = await queryDb('SELECT * FROM users WHERE username = ?', [username]);
+  console.log("Received signup request:", { username, password }); // Debugging request data
 
-        if (existingUser.length > 0) {
-            return res.status(409).json({ message: 'Username already exists.' });
-        }
+  // Validasi input
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username and password are required." });
+  }
 
-        // Hash the password and insert the new user
-        const hashedPassword = await bcrypt.hash(password, 10);
-        await queryDb('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]);
+  try {
+    // Cek apakah username sudah ada
+    console.log("Checking if username already exists in the database...");
+    const existingUser = await queryDb("SELECT * FROM users WHERE username = ?", [username]);
 
-        res.status(201).json({ message: 'Signup successful' });
-    } catch (error) {
-        console.error('Error in signup:', error);
-        res.status(500).json({ message: 'Error signing up' });
+    if (existingUser.length > 0) {
+      console.log("Username already exists.");
+      return res.status(409).json({ message: "Username already exists." });
     }
+
+    // Hash password
+    console.log("Hashing the password...");
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Menyisipkan pengguna baru ke dalam database
+    console.log("Inserting new user into the database...");
+    await queryDb("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword]);
+
+    console.log("Signup successful");
+    res.status(201).json({ message: "Signup successful" });
+  } catch (error) {
+    console.error("Error in signup:", error);
+    res.status(500).json({ message: "Error signing up", error: error.message });
+  }
 });
 
 export default router;
