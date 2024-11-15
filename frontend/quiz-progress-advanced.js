@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/quiz-progress?username=${username}&quiz_id=${quizId}`);
+        const response = await fetch(`https://ruang-bahasa-be2.vercel.app/quiz-progress?username=${username}&quiz_id=${quizId}`);
         const result = await response.json();
 
         const progressStatus = document.getElementById('progress-status');
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         tryAgainButton.addEventListener('click', async () => {
             console.log('Try Again button clicked'); // Add logging
-            await fetch(`http://localhost:3000/reset-quiz?username=${username}&quiz_id=${quizId}`, { method: 'POST' });
+            await fetch(`https://ruang-bahasa-be2.vercel.app/reset-quiz?username=${username}&quiz_id=${quizId}`, { method: 'POST' });
             window.location.href = 'advanced.html';
         });
     } catch (error) {

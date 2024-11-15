@@ -260,7 +260,7 @@ async function saveProgress() {
 
     try {
         // Make sure the correct URL is used (change localhost to the actual backend URL if not on the same domain)
-        const response = await fetch('http://localhost:3000/save-progress', {
+        const response = await fetch('https://ruang-bahasa-be2.vercel.app/save-progress', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
