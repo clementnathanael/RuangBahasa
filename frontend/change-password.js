@@ -26,7 +26,7 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
 
         if (response.ok) {
             alert('Password changed successfully.');
-            window.location.href = 'http://127.0.0.1:5500/profile.html';
+            window.location.href = 'profile.html';
         } else {
             const errorMessage = document.getElementById('errorMessage');
             errorMessage.textContent = result.message || 'Failed to change password.';
