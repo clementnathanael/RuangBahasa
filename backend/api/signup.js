@@ -20,6 +20,8 @@ router.post("/", async (req, res) => {
     console.log("Checking if username already exists in the database...");
     const existingUser = await queryDb("SELECT * FROM users WHERE username = ?", [username]);
 
+    console.log("Existing user query result:", existingUser); // Log the result of the query
+
     if (existingUser.length > 0) {
       console.log("Username already exists.");
       return res.status(409).json({ message: "Username already exists." });
