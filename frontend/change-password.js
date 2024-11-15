@@ -26,7 +26,7 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
 
         if (response.ok) {
             const successMessage = document.getElementById('successMessage');
-            successMessage.textContent = 'Password berhasil diubah.';
+            successMessage.textContent = 'Password berhasil diubah. Mengarahkan ke halaman profil...';
             successMessage.style.display = 'block';
             successMessage.classList.add('show');
         
