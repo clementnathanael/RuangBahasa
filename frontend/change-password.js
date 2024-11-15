@@ -1,5 +1,3 @@
-// import { set } from "mongoose";
-
 document.getElementById('changePasswordForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -28,15 +26,19 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
 
         if (response.ok) {
             const successMessage = document.getElementById('successMessage');
-            successMessage.textContent('Password berhasil diubah.');
+            successMessage.textContent = 'Password berhasil diubah.';
             successMessage.style.display = 'block';
             successMessage.classList.add('show');
+        
+            // Redirect to profile page
             window.location.href = 'profile.html';
-
+        
             // Redirect to login page after 3 seconds
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 3000);
+        
+        
         } else {
             const errorMessage = document.getElementById('errorMessage');
             errorMessage.textContent = result.message || 'Failed to change password.';
