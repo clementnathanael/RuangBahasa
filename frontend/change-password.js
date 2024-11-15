@@ -36,7 +36,7 @@ document.getElementById('changePasswordForm').addEventListener('submit', async f
             // Redirect to login page after 3 seconds
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 3000);
+            }, 5000);
         
         
         } else {
