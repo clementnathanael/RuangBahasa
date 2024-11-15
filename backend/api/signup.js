@@ -1,7 +1,6 @@
-// backend/api/signup.js
 import express from "express";
 import bcrypt from "bcryptjs";
-import { queryDb } from "../server.js"; // Menggunakan queryDb dari server.js
+import { queryDb } from "../server.js";
 
 const router = express.Router();
 
@@ -10,13 +9,13 @@ router.post("/", async (req, res) => {
 
   console.log("Received signup request:", { username, password }); // Debugging request data
 
-  // Validasi input
+  // Validate input
   if (!username || !password) {
     return res.status(400).json({ message: "Username and password are required." });
   }
 
   try {
-    // Cek apakah username sudah ada
+    // Check if the username already exists
     console.log("Checking if username already exists in the database...");
     const existingUser = await queryDb("SELECT * FROM users WHERE username = ?", [username]);
 
@@ -27,13 +26,16 @@ router.post("/", async (req, res) => {
       return res.status(409).json({ message: "Username already exists." });
     }
 
-    // Hash password
+    // Hash the password
     console.log("Hashing the password...");
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Menyisipkan pengguna baru ke dalam database
+    // Insert the new user into the database
     console.log("Inserting new user into the database...");
-    await queryDb("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword]);
+    const result = await queryDb("INSERT INTO users (username, password) VALUES (?, ?)", [username, hashedPassword]);
+
+    // Log the result of the insertion query
+    console.log("Insertion result:", result);
 
     console.log("Signup successful");
     res.status(201).json({ message: "Signup successful" });
