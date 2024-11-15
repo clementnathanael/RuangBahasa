@@ -35,7 +35,7 @@ try {
 // }));
 
 const corsOptions = {
-    origin: ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://ruangbahasa-be.vercel.app'], // Allow requests from these origins
+    origin: ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://ruang-bahasa-be2.vercel.app'], // Allow requests from these origins
     methods: 'GET,POST,PUT,DELETE',
     allowedHeaders: 'Content-Type,Authorization',
     optionsSuccessStatus: 200
