@@ -29,6 +29,8 @@ document.getElementById('signupForm').addEventListener('submit', async function(
             body: JSON.stringify({ username, password })
         });
 
+        const responseData = await response.json();  // Parse response JSON
+
         if (response.ok) {
             // Display success message
             const successMessage = document.getElementById('successMessage');
@@ -41,8 +43,9 @@ document.getElementById('signupForm').addEventListener('submit', async function(
                 window.location.href = 'login.html';
             }, 3000);
         } else {
+            // Display backend error message, if available
             const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = 'Signup failed. Please try again.';
+            errorMessage.textContent = responseData.message || 'Signup failed. Please try again.';
             errorMessage.style.display = 'block';
             errorMessage.classList.add('show');
 
@@ -54,5 +57,15 @@ document.getElementById('signupForm').addEventListener('submit', async function(
         }
     } catch (error) {
         console.error('Error:', error);
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = 'An error occurred. Please try again.';
+        errorMessage.style.display = 'block';
+        errorMessage.classList.add('show');
+
+        // Hide the error message after 3 seconds
+        setTimeout(() => {
+            errorMessage.style.display = 'none';
+            errorMessage.classList.remove('show');
+        }, 3000);
     }
 });
