@@ -36,7 +36,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             // Show error message if username or password is incorrect
             const errorData = await response.json();
             const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = result.message || 'Username / password salah!';
+            errorMessage.textContent = errorData.message || 'Username / password salah!';
             errorMessage.style.display = 'block';
 
             // Hide the error message after 3 seconds
