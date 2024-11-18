@@ -18,12 +18,16 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             const result = await response.json();
 
             // Save user_id to localStorage for tracking across pages
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = 'Login berhasil! Mengarahkan ke halaman utama...';
             localStorage.setItem('user_id', result.user_id);
             console.log("User ID saved to localStorage:", result.user_id);
             localStorage.setItem('username', username);
 
             // Redirect to the quiz or dashboard page
-            window.location.href = 'page2.html';
+            setTimeout(() => {
+                window.location.href = 'page2.html';
+            }, 3000);
         } else {
             // Show error message if username or password is incorrect
             const errorData = await response.json();
