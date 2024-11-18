@@ -13,9 +13,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             body: JSON.stringify({ username, password })
         });
 
+        const result = await response.json();
+
         if (response.ok) {
             // Parse the response to get the user data, including the user ID
-            const result = await response.json();
             const successMessage = document.getElementById('successMessage');
             successMessage.textContent = 'Login berhasil. Mengarahkan ke halaman utama...';
             successMessage.style.display = 'block';
@@ -35,7 +36,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             // Show error message if username or password is incorrect
             const errorData = await response.json();
             const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = errorData.message || 'Username / password salah!';
+            errorMessage.textContent = result.message || 'Username / password salah!';
             errorMessage.style.display = 'block';
 
             // Hide the error message after 3 seconds
