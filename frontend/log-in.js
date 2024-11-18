@@ -20,6 +20,8 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             // Save user_id to localStorage for tracking across pages
             const successMessage = document.getElementById('successMessage');
             successMessage.textContent = 'Login berhasil! Mengarahkan ke halaman utama...';
+            successMessage.style.display = 'block';
+            successMessage.classList.add('show');
             localStorage.setItem('user_id', result.user_id);
             console.log("User ID saved to localStorage:", result.user_id);
             localStorage.setItem('username', username);
