@@ -16,6 +16,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (response.ok) {
             // Parse the response to get the user data, including the user ID
             const result = await response.json();
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = 'Login berhasil. Mengarahkan ke halaman utama...';
+            successMessage.style.display = 'block';
+            successMessage.classList.add('show');
 
             // Save user_id to localStorage for tracking across pages
             localStorage.setItem('user_id', result.user_id);
@@ -23,7 +27,10 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
             localStorage.setItem('username', username);
 
             // Redirect to the quiz or dashboard page
-            window.location.href = 'page2.html';
+            // Redirect to profile page
+            setTimeout(() => {
+                window.location.href = 'page2.html';
+            }, 3000);
         } else {
             // Show error message if username or password is incorrect
             const errorData = await response.json();
